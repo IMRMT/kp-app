@@ -77,7 +77,6 @@
                 @endif
             </tbody>
             <tfoot>
-                {{--  --}}
                 <tr>
                     <th colspan="3" class="text-end">Total</th>
                     <th>Rp{{ number_format($grandTotal, 0, ',', '.') }}</th>
