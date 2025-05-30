@@ -65,7 +65,7 @@ class ProdukController extends Controller
         $produks = $query->paginate(8);
 
         $expiredBatches = $produks->filter(function ($batch) {
-            return $batch->tgl_kadaluarsa <= now() && $batch->status === 'tersedia';;
+            return $batch->tgl_kadaluarsa <= now() && $batch->tgl_kadaluarsa !== null && $batch->status === 'tersedia';
         });
 
         $expiredBatchList = null;
@@ -165,12 +165,10 @@ class ProdukController extends Controller
      */
     public function create()
     {
-        $distributors = Distributor::all();
         $produks = Produk::all();
         $satuans = Satuan::all();
-        $gudangs = Gudang::all();
         $tipeproduks = TipeProduk::all();
-        return view('produk.create', ['distributors' => $distributors, 'satuans' => $satuans, 'tipeproduks' => $tipeproduks, 'gudangs' => $gudangs, 'produks' => $produks]);
+        return view('produk.create', ['satuans' => $satuans, 'tipeproduks' => $tipeproduks, 'produks' => $produks]);
     }
 
     /**
@@ -180,16 +178,10 @@ class ProdukController extends Controller
     {
         $request->validate([
             'nama' => 'required',
-            'stok' => 'nullable',
-            'unitprice' => 'nullable',
             'sellingprice' => 'required',
-            'status' => 'nullable',
             'deskripsi' => 'required',
-            'distributors' => 'nullable',
-            'satuans' => 'nullable',
-            'gudangs' => 'nullable',
-            'tgl_datang' => 'nullable',
-            'tgl_kadaluarsa' => 'nullable',
+            'satuans' => 'required',
+            'tipeproduks' => 'required',
         ]); //ini memberitahu bahwa kolom name itu perlu, agar tidak null
         $produk = new Produk();
         $produk->nama = $request->nama;
@@ -198,20 +190,6 @@ class ProdukController extends Controller
         $produk->satuans_id = $request->satuans;
         $produk->tipe_produks_id = $request->tipeproduks;
         $produk->save();
-
-        // Step 2: Create Produk Batch
-        if ($request->stok && $request->unitprice && $request->tgl_kadaluarsa) {
-            $batch = new Produkbatches();
-            $batch->produk_id = $produk->id;
-            $batch->stok = $request->stok;
-            $batch->unitprice = $request->unitprice;
-            $batch->status = $request->status;
-            $batch->tgl_datang = $request->tgl_datang;
-            $batch->tgl_kadaluarsa = $request->tgl_kadaluarsa;
-            $batch->distributors_id = $request->distributors;
-            $batch->gudangs_id = $request->gudangs;
-            $batch->save();
-        }
 
 
         // Type::create($request->all());
@@ -283,7 +261,7 @@ class ProdukController extends Controller
         $gudangs = Gudang::all();
 
         $qtyOrdered = $data->notaBeliProduks->sum('quantity');
-        $qtyReceived = $data->stok;
+        $qtyReceived = $data->terimaBatches->sum('stok');
         $qtyRemaining = $qtyOrdered - $qtyReceived;
 
         return view('produk.terimaBatch', [
@@ -304,7 +282,7 @@ class ProdukController extends Controller
         $newGudangId = $request->get('gudangs');
 
         $qtyOrdered = $batch->notaBeliProduks->sum('quantity');
-        $qtyReceived = $batch->stok;
+        $qtyReceived = $batch->terimaBatches->sum('stok');
         $qtyRemaining = $qtyOrdered - $qtyReceived;
 
         if ($stokBaru > $qtyRemaining) {
@@ -321,7 +299,7 @@ class ProdukController extends Controller
                 'stok' => $stokBaru,
                 'unitprice' => $batch->unitprice,
                 'distributors_id' => $batch->distributors_id,
-                'tgl_kadaluarsa' => $batch->tgl_kadaluarsa,
+                'tgl_kadaluarsa' => $batch->tgl_kadaluarsa ?? null,
                 'tgl_datang' => $request->get('tgl_datang'),
                 'status' => 'tersedia',
                 'gudangs_id' => $newGudangId,
@@ -372,7 +350,7 @@ class ProdukController extends Controller
                 'status' => $request->get('status'),
                 'unitprice' => $request->get('unitprice'),
                 'diskon' => $request->get('diskon'),
-                'tgl_kadaluarsa' => $request->get('tgl_kadaluarsa'),
+                'tgl_kadaluarsa' => $request->get('tgl_kadaluarsa') ?: null,
                 'tgl_datang' => $request->get('tgl_datang'),
                 'distributors_id' => $request->get('distributors'),
                 'gudangs_id' => $request->get('gudangs'),

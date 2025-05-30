@@ -82,7 +82,7 @@
                                 $totalReceived = $d->terimaBatches->sum('stok') ?? 0;
                             @endphp
 
-                            @if ($nota && $totalReceived < $nota->quantity && $d->tgl_kadaluarsa > now())
+                            @if ($nota && $totalReceived < $nota->quantity && ($d->tgl_kadaluarsa > now() || is_null($d->tgl_kadaluarsa)))
                                 {{-- ini pengecekan apakah produk diterima sudah sama dengan produk dibeli --}}
                                 <a class="btn" href="{{ route('produks.terimaBatch', [$d->id]) }}">Terima</a>
                             @endif

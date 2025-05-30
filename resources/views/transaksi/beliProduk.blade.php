@@ -111,7 +111,7 @@
             </div>
             <div class="form-group">
                 <label for="tgl_kadaluarsa">Tanggal Kadaluarsa</label>
-                <input type="date" name="tgl_kadaluarsa" class="form-control" required>
+                <input type="date" name="tgl_kadaluarsa" class="form-control" value="{{ old('tgl_kadaluarsa', '') }}">
             </div>
             <button class="btn btn-success mt-3" type="submit">Simpan Produk Baru</button>
         </form>
@@ -153,7 +153,7 @@
 
                     <div class="form-group">
                         <label for="tgl_kadaluarsa">Tanggal Kadaluarsa</label>
-                        <input type="date" class="form-control" name="tgl_kadaluarsa" required>
+                        <input type="date" class="form-control" name="tgl_kadaluarsa" value="{{ old('tgl_kadaluarsa', '') }}">
                     </div>
 
                     <div class="form-group">
@@ -208,7 +208,7 @@
                         {{ $item['nama'] }} - {{ $item['quantity'] }} {{ $satuan->nama ?? 'N/A' }}
                         (Rp{{ number_format($item['unitprice'], 0, ',', '.') }})
                         <br><small>Kadaluarsa:
-                            {{ \Carbon\Carbon::parse($item['tgl_kadaluarsa'])->format('d-m-Y') }}</small>
+                            {{ \Carbon\Carbon::parse($item['tgl_kadaluarsa'])->format('d-m-Y')  ?? 'Tidak Ada'}}</small>
                     </li>
                     <form method="POST" action="{{ route('notabeliscart.delete', ['id' => $key]) }}">
                         @csrf

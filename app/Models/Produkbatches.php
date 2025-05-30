@@ -53,6 +53,6 @@ class Produkbatches extends Model
 
     public function terimaBatches()
     {
-        return $this->hasMany(Terimabatches::class);
+        return $this->hasMany(Terimabatches::class, 'produkbatches_id');
     }
 }

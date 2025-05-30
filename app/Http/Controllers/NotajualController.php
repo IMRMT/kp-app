@@ -191,7 +191,10 @@ class NotajualController extends Controller
                 ->where('parcelproduks.parcels_id', $parcel->id)
                 ->where('produkbatches.status', 'tersedia')
                 ->where('produkbatches.stok', '>', 0)
-                ->whereDate('produkbatches.tgl_kadaluarsa', '>', Carbon::now())
+                ->where(function ($query) {
+                    $query->whereDate('produkbatches.tgl_kadaluarsa', '>', Carbon::now())
+                        ->orWhereNull('produkbatches.tgl_kadaluarsa');
+                })
                 ->select('parcelproduks.produks_id', 'parcelproduks.quantity', DB::raw('AVG(produkbatches.diskon) as diskon'), DB::raw('SUM(produkbatches.stok) as total_stok'))
                 ->groupBy('parcelproduks.produks_id', 'parcelproduks.quantity')
                 ->get();
@@ -210,7 +213,7 @@ class NotajualController extends Controller
                 $totalDiskon += $d->diskon;
                 $count++;
             }
-            
+
             $parcel->harga = $parcel->biaya_packing + $totalKomponen;
             $parcel->image = null;
             $parcel->satuan_nama = '-';
@@ -242,7 +245,10 @@ class NotajualController extends Controller
             ->join('satuans', 'produks.satuans_id', '=', 'satuans.id')
             ->where('produkbatches.status', '=', 'tersedia')
             ->where('produkbatches.stok', '>', 0)
-            ->whereDate('produkbatches.tgl_kadaluarsa', '>', Carbon::now())
+            ->where(function ($query) {
+                $query->whereDate('produkbatches.tgl_kadaluarsa', '>', Carbon::now())
+                    ->orWhereNull('produkbatches.tgl_kadaluarsa');
+            })
             ->whereNotNull('produkbatches.tgl_datang')
             ->select(
                 'produks.id',
@@ -394,7 +400,10 @@ class NotajualController extends Controller
                         $batches = Produkbatches::where('produks_id', $produk->id)
                             ->where('stok', '>', 0)
                             ->where('status', 'tersedia')
-                            ->whereDate('tgl_kadaluarsa', '>', now())
+                            ->where(function ($query) {
+                                $query->whereDate('tgl_kadaluarsa', '>', now())
+                                    ->orWhereNull('tgl_kadaluarsa');
+                            })
                             ->orderBy('tgl_kadaluarsa')
                             ->get();
 
@@ -435,7 +444,10 @@ class NotajualController extends Controller
                     $batches = Produkbatches::where('produks_id', $produkId)
                         ->where('stok', '>', 0)
                         ->where('status', 'tersedia')
-                        ->whereDate('tgl_kadaluarsa', '>', now())
+                        ->where(function ($query) {
+                            $query->whereDate('tgl_kadaluarsa', '>', now())
+                                ->orWhereNull('tgl_kadaluarsa');
+                        })
                         ->orderBy('tgl_kadaluarsa')
                         ->get();
 
@@ -615,7 +627,7 @@ class NotajualController extends Controller
             'diskon' => $request->input('diskon'),
             'sellingprice' => $request->input('sellingprice'),
             'stok' => $request->input('stok'),
-            'tgl_kadaluarsa' => $request->input('tgl_kadaluarsa'),
+            'tgl_kadaluarsa' => $request->input('tgl_kadaluarsa') ?? 0,
             'distributors_id' => $request->input('distributors_id'),
             'quantity' => $request->input('quantity'),
             'is_parcel' => $isParcel,

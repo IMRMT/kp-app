@@ -170,7 +170,7 @@ class NotabeliController extends Controller
             $batch = Produkbatches::where('produks_id', $produkId)
                 ->where('distributors_id', $item['distributors_id'])
                 ->where('unitprice', $item['unitprice'])
-                ->whereDate('tgl_kadaluarsa', $item['tgl_kadaluarsa'])
+                ->whereDate('tgl_kadaluarsa', $item['tgl_kadaluarsa'] ?? null)
                 ->first();
 
             if ($batch) {
@@ -184,7 +184,7 @@ class NotabeliController extends Controller
                     // 'stok' => $item['quantity'],
                     'unitprice' => $item['unitprice'],
                     'distributors_id' => $item['distributors_id'],
-                    'tgl_kadaluarsa' => $item['tgl_kadaluarsa'],
+                    'tgl_kadaluarsa' => $item['tgl_kadaluarsa'] ?? null,
                     'status' => 'proses_order',
                     'gudangs_id' => $item['gudangs_id'],
                 ]);
@@ -219,7 +219,7 @@ class NotabeliController extends Controller
             'satuans' => 'required',
             'tipeproduks' => 'required',
             'gudangs' => 'required',
-            'tgl_kadaluarsa' => 'required',
+            'tgl_kadaluarsa' => 'nullable',
             'pegawai_id' => 'required',
         ]);
 
@@ -314,7 +314,7 @@ class NotabeliController extends Controller
         $cart = session()->get('cart', []);
 
         $id = $request->input('produk_id');
-        $tgl_kadaluarsa = $request->input('tgl_kadaluarsa');
+        $tgl_kadaluarsa = $request->input('tgl_kadaluarsa') ?: null;
         $unitprice = $request->input('unitprice');
         $quantity = (int) $request->input('quantity');
 
