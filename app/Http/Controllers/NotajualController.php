@@ -38,6 +38,7 @@ class NotajualController extends Controller
         $query = NotajualProduk::query()
             ->select(
                 'notajuals_has_produks.*',
+                'notajuals.jenis_pembayaran as metodebayar',
                 'produks.id as produks_id',
                 'produks.nama as nama_produk',
                 'distributors.id as distributors_id',
@@ -56,6 +57,7 @@ class NotajualController extends Controller
                     ->orWhere('produks.nama', 'LIKE', "%$search%")
                     ->orWhere('distributors.nama', 'LIKE', "%$search%")
                     ->orWhere('users.nama', 'LIKE', "%$search%")
+                    ->orWhere('notajuals.jenis_pembayaran', 'LIKE', "%$search%")
                     ->orWhere('notajuals_has_produks.quantity', 'LIKE', "%$search%")
                     ->orWhere('notajuals_has_produks.subtotal', 'LIKE', "%$search%")
                     ->orWhere('notajuals_has_produks.created_at', 'LIKE', "%$search%")
@@ -72,6 +74,9 @@ class NotajualController extends Controller
                 break;
             case 'nama_pegawai':
                 $query->orderBy('users.nama', $sortOrder);
+                break;
+            case 'metodebayar':
+                $query->orderBy('notajuals.jenis_pembayaran', $sortOrder);
                 break;
             case 'nama_produk':
                 $query->orderBy('produks.nama', $sortOrder);
@@ -372,9 +377,11 @@ class NotajualController extends Controller
         DB::beginTransaction();
         try {
             $pegawaiId = $request->input('pegawai_id');
+            $metodeBayar = $request->input('metodebayar');
 
             $notajual = Notajual::create([
                 'pegawai_id' => $pegawaiId,
+                'jenis_pembayaran' => $metodeBayar,
             ]);
 
             $ids = $request->input('id');

@@ -37,6 +37,7 @@
             'nama_produk' => 'Nama Produk',
             'produks_distributors_id' => 'ID Distributor',
             'nama_dist' => 'Nama Distributor',
+            'metodebayar' => 'Metode Pembayaran',
             'quantity' => 'Quantity',
             'subtotal' => 'Subtotal',
             'created_at' => 'Tanggal Transaksi',
@@ -66,6 +67,7 @@
                         <td>{{ $d->nama_produk ?? '-' }}</td>
                         <td>{{ $d->distributors_id }}</td>
                         <td>{{ $d->nama_distributor ?? '-' }}</td>
+                        <td>{{ $d->notajual->jenis_pembayaran ?? '-' }}</td>
                         <td>{{ $d->quantity }}</td>
                         <td>Rp {{ number_format($d->subtotal, 0, ',', '.') }}</td>
                         <td>{{ $d->created_at }}</td>

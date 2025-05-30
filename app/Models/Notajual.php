@@ -11,7 +11,7 @@ class Notajual extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['pegawai_id'];
+    protected $fillable = ['pegawai_id','jenis_pembayaran'];
 
     /**
      * Get the user that owns the Transaction

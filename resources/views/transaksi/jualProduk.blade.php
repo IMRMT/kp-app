@@ -139,7 +139,7 @@
                     <input type="hidden" name="id" value="{{ $p->id }}">
                     <input type="hidden" name="nama" value="{{ $p->nama }}">
                     <input type="hidden" name="satuan" value="{{ $p->satuan_nama }}">
-                    <input type="hidden" name="diskon" value="{{ $p->diskon ?? 0}}">
+                    <input type="hidden" name="diskon" value="{{ $p->diskon ?? 0 }}">
                     <input type="hidden" name="sellingprice" value="{{ $p->sellingprice }}">
                     <input type="hidden" name="stok" value="{{ $p->stok }}">
                     <input type="hidden" name="tgl_kadaluarsa" value="{{ $p->tgl_kadaluarsa }}">
@@ -166,12 +166,12 @@
                         {{ $item['nama'] }} - {{ $item['quantity'] }} {{ $item['satuan'] ?? '' }}
                         (Rp{{ number_format($item['sellingprice'], 0, ',', '.') }})
                         @if (empty($item['is_parcel']))
-                            (Diskon {{ $item['diskon'] * 100 ?? 0}}%)
+                            (Diskon {{ $item['diskon'] * 100 ?? 0 }}%)
                         @endif
                         @if (!empty($item['is_parcel']))
                             <span class="badge bg-info">Parcel</span>
                             @if (!empty($item['diskon']))
-                                (Diskon {{ $item['diskon'] * 100 ?? 0}}%)
+                                (Diskon {{ $item['diskon'] * 100 ?? 0 }}%)
                             @endif
                         @endif
                         <form method="POST" action="{{ route('notajualscart.delete', ['id' => $key]) }}"
@@ -196,6 +196,15 @@
                     <input type="hidden" name="distributors_id[]" value="{{ $item['distributors_id'] ?? '' }}">
                     <input type="hidden" name="is_parcel[]" value="{{ $item['is_parcel'] ?? false }}">
                 @endforeach
+                <div class="form-group">
+                    <label for="metodebayar">Metode Pembayaran</label>
+                    <select class="form-control" name="metodebayar" aria-describedby="nameHelp">
+                        <option value="cash">Cash</option>
+                        <option value="qris">Qris</option>
+                        <option value="debit">Debit</option>
+                    </select>
+                    <small id="nameHelp" class="form-text text-muted">Mohon pilih input yang diinginkan.</small>
+                </div>
                 <button class="btn btn-primary">Simpan Penjualan</button>
             </form>
         </div>
