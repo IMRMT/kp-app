@@ -128,12 +128,20 @@ class UserController extends Controller
         }
         $data = User::find($id);
         if ($data->tipe_user()->tipe === 'admin') {
-            $data->nama = $request->get('nama');
-            $data->no_hp = $request->get('no_hp');
-            $data->email = $request->get('email');
-            $data->username = $request->get('username');
-            $data->tipe_users_id = $request->get('tipe_user');
-            $data->password = Hash::make($request->get('password'));
+            if (empty($request->get('password'))) {
+                $data->nama = $request->get('nama');
+                $data->no_hp = $request->get('no_hp');
+                $data->email = $request->get('email');
+                $data->username = $request->get('username');
+                $data->tipe_user = $request->get('tipe_user');
+            } else {
+                $data->nama = $request->get('nama');
+                $data->no_hp = $request->get('no_hp');
+                $data->email = $request->get('email');
+                $data->username = $request->get('username');
+                $data->tipe_user = $request->get('tipe_user');
+                $data->password = Hash::make($request->get('password'));
+            }
         } else {
             $data->password = Hash::make($request->get('password'));
         }

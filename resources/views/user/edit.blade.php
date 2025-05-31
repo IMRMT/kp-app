@@ -34,7 +34,7 @@
             <div class="form-group">
                 <label for="password">Password User</label>
                 <input type="text" class="form-control" name="password" aria-describedby="nameHelp"
-                    placeholder="Masukkan password User" value="{{ $datas->password }}">
+                    placeholder="Masukkan password User">
                 <small id="nameHelp" class="form-text text-muted">Mohon isikan dengan input yang diinginkan.</small>
             </div>
             <div class="form-group">
@@ -52,7 +52,7 @@
             <div class="form-group">
                 <label for="password">Password User</label>
                 <input type="text" class="form-control" name="password" aria-describedby="nameHelp"
-                    placeholder="Masukkan password User" value="{{ $datas->password }}">
+                    placeholder="Masukkan password User">
                 <small id="nameHelp" class="form-text text-muted">Mohon isikan dengan input yang diinginkan.</small>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
