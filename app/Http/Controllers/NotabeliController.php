@@ -81,6 +81,41 @@ class NotabeliController extends Controller
         ]);
     }
 
+    public function report(Request $request)
+    {
+        $filter = $request->get('filter', 'day');
+
+        // Base query: eager load related produk info
+        $query = Notabeliproduk::with('notabeli', 'produkbatches.produks');
+
+        // Grouping and filtering by created_at according to filter
+        switch ($filter) {
+            case 'week':
+                $query->whereBetween('created_at', [
+                    now()->startOfWeek(),
+                    now()->endOfWeek()
+                ]);
+                break;
+            case 'month':
+                $query->whereYear('created_at', now()->year)
+                    ->whereMonth('created_at', now()->month);
+                break;
+            case 'year':
+                $query->whereYear('created_at', now()->year);
+                break;
+            case 'day':
+            default:
+                $query->whereDate('created_at', now()->toDateString());
+        }
+
+        $purchases = $query->get();
+
+        // Calculate total sales (sum of subtotal)
+        $total = $purchases->sum('subtotal');
+
+        return view('transaksi.reportPembelian', compact('purchases', 'total', 'filter'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */

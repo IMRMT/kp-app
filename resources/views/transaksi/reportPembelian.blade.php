@@ -43,13 +43,13 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($sales as $sale)
+                @foreach ($purchases as $purchase)
                     <tr>
-                        <td>{{ $sale->notajual->id ?? '-' }}</td>
-                        <td>{{ $sale->produkbatches->produks_id ?? '-' }}</td>
-                        <td>{{ $sale->produkbatches->produks->nama ?? '-' }}</td>
-                        <td>{{ $sale->quantity }}</td>
-                        <td>Rp {{ number_format($sale->subtotal, 0, ',', '.') }}</td>
+                        <td>{{ $purchase->notabeli->id ?? '-' }}</td>
+                        <td>{{ $purchase->produkbatches->produks_id ?? '-' }}</td>
+                        <td>{{ $purchase->produkbatches->produks->nama ?? '-' }}</td>
+                        <td>{{ $purchase->quantity }}</td>
+                        <td>Rp {{ number_format($purchase->subtotal, 0, ',', '.') }}</td>
                     </tr>
                 @endforeach
             </tbody>

@@ -18,7 +18,8 @@
                 <select name="sort_by" class="form-select px-4 py-2 rounded border border-gray-300">
                     <option value="nama" {{ request('sort_by') === 'nama' ? 'selected' : '' }}>Nama</option>
                     <option value="total_stok" {{ request('sort_by') === 'total_stok' ? 'selected' : '' }}>Stok</option>
-                    <option value="sellingprice" {{ request('sort_by') === 'sellingprice' ? 'selected' : '' }}>Harga</option>
+                    <option value="sellingprice" {{ request('sort_by') === 'sellingprice' ? 'selected' : '' }}>Harga
+                    </option>
                 </select>
 
                 <select name="sort_order" class="form-select px-4 py-2 rounded border border-gray-300">
@@ -34,8 +35,10 @@
             @foreach ($datas as $d)
                 @php
                     $batch = $d->produkbatches
-                        ->where('status', 'tersedia')
-                        ->where('tgl_kadaluarsa', '>', now())
+                        ->filter(function ($batch) {
+                            return $batch->status === 'tersedia' &&
+                                (is_null($batch->tgl_kadaluarsa) || $batch->tgl_kadaluarsa > now());
+                        })
                         ->sortByDesc('created_at')
                         ->first();
                 @endphp

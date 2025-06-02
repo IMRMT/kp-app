@@ -94,12 +94,18 @@ class ProdukController extends Controller
         // Load produk with summed stok from batches
         $query = Produk::withSum(
             ['produkbatches as total_stok' => function ($q) {
-                $q->where('status', 'tersedia')->whereDate('tgl_kadaluarsa', '>', now());
+                $q->where('status', 'tersedia')->where(function ($sub) {
+                    $sub->whereDate('tgl_kadaluarsa', '>', now())
+                        ->orWhereNull('tgl_kadaluarsa');
+                });
             }],
             'stok'
         )
             ->with(['produkbatches' => function ($q) {
-                $q->where('status', 'tersedia')->whereDate('tgl_kadaluarsa', '>', now());
+                $q->where('status', 'tersedia')->where(function ($sub) {
+                    $sub->whereDate('tgl_kadaluarsa', '>', now())
+                        ->orWhereNull('tgl_kadaluarsa');
+                });
             }]);
 
 
@@ -108,6 +114,7 @@ class ProdukController extends Controller
                 $q->where('nama', 'LIKE', "%$search%")
                     ->orWhere('golongan', 'LIKE', "%$search%")
                     ->orWhere('deskripsi', 'LIKE', "%$search%")
+                    ->orWhere('sellingprice', 'LIKE', "%$search%")
                     ->orWhereHas('produkbatches', function ($qb) use ($search) {
                         $qb->where('status', 'tersedia')
                             ->whereDate('tgl_kadaluarsa', '>', now())
@@ -206,13 +213,19 @@ class ProdukController extends Controller
         // Get the latest available batch for this product
         $latestBatch = Produkbatches::where('produks_id', $id)
             ->where('status', 'tersedia')
-            ->whereDate('tgl_kadaluarsa', '>', now())
+            ->where(function ($q) {
+                $q->whereDate('tgl_kadaluarsa', '>', now())
+                    ->orWhereNull('tgl_kadaluarsa');
+            })
             ->orderBy('created_at', 'desc')
             ->first();
 
         $stok = Produkbatches::where('produks_id', $id)
             ->where('status', 'tersedia')
-            ->whereDate('tgl_kadaluarsa', '>', now())
+            ->where(function ($q) {
+                $q->whereDate('tgl_kadaluarsa', '>', now())
+                    ->orWhereNull('tgl_kadaluarsa');
+            })
             ->sum('stok');
 
         $satuan = $latestBatch && $latestBatch->satuan ? $latestBatch->satuan->nama : 'Tidak tersedia';
