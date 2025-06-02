@@ -23,6 +23,10 @@
             body {
                 overflow: visible !important;
             }
+
+            button {
+                display: none !important;
+            }
         }
     </style>
 

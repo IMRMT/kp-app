@@ -101,6 +101,41 @@ class NotajualController extends Controller
         ]);
     }
 
+    public function report(Request $request)
+    {
+        $filter = $request->get('filter', 'day');
+
+        // Base query: eager load related produk info
+        $query = Notajualproduk::with('notajual', 'produkbatches.produks');
+
+        // Grouping and filtering by created_at according to filter
+        switch ($filter) {
+            case 'week':
+                $query->whereBetween('created_at', [
+                    now()->startOfWeek(),
+                    now()->endOfWeek()
+                ]);
+                break;
+            case 'month':
+                $query->whereYear('created_at', now()->year)
+                    ->whereMonth('created_at', now()->month);
+                break;
+            case 'year':
+                $query->whereYear('created_at', now()->year);
+                break;
+            case 'day':
+            default:
+                $query->whereDate('created_at', now()->toDateString());
+        }
+
+        $sales = $query->get();
+
+        // Calculate total sales (sum of subtotal)
+        $total = $sales->sum('subtotal');
+
+        return view('transaksi.reportPenjualan', compact('sales', 'total', 'filter'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */

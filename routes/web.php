@@ -97,6 +97,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/notabelis/{id}/print', [NotabeliController::class, 'print'])->name('notabelis.print');
     Route::get('profiltoko/uploadImage/{id}', [ProfiltokoController::class, 'uploadImage']);
     Route::post('profiltoko/simpanImage', [ProfiltokoController::class, 'simpanImage']);
+    Route::get('transaksi/report/reportPenjualan', [NotajualController::class, 'report'])->name('notajuals.report');
     Route::get('/transaksi', function () {
         return view('transaksi.tipe');
     })->name('transaksi');

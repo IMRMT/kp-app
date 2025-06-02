@@ -21,6 +21,18 @@
             </div>
         </form>
 
+        <form method="GET" action="{{ route('notajuals.report') }}">
+            <label for="groupBy">Lihat Laporan Penjualan:</label>
+            <select name="filter" id="groupBy" class="form-select w-auto d-inline mx-2">
+                <option value="">-- Pilih Grup --</option>
+                <option value="day">Hari Ini</option>
+                <option value="week">Minggu Ini</option>
+                <option value="month">Bulan Ini</option>
+                <option value="year">Tahun Ini</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Lihat</button>
+        </form>
+
         <h2>Nota Jual</h2>
         <p>Daftar transaksi penjualan yang tercatat di apotek.</p>
 
