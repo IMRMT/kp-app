@@ -11,6 +11,7 @@ use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfiltokoController;
 use App\Http\Controllers\ParcelController;
 use App\Http\Controllers\TipeProdukController;
+use App\Http\Controllers\TipeUserController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Middleware\IsAdmin;
@@ -60,6 +61,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('notabelis', NotabeliController::class);
     Route::resource('satuans', SatuanController::class);
     Route::resource('tipeproduks', TipeProdukController::class);
+    Route::resource('tipeusers', TipeUserController::class);
     Route::resource('produks', ProdukController::class);
     Route::resource('parcels', ParcelController::class);
     Route::resource('gudangs', GudangController::class);
@@ -68,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/distributor', [DistributorController::class, 'index'])->name('distributor');
     Route::get('/satuan', [SatuanController::class, 'index'])->name('satuan');
     Route::get('/tipeproduk', [TipeProdukController::class, 'index'])->name('tipeproduk');
+    Route::get('/tipeuser', [TipeUserController::class, 'index'])->name('tipeuser');
     Route::get('/produk', [ProdukController::class, 'index'])->name('produk');
     Route::get('/parcel', [ParcelController::class, 'index'])->name('parcel');
     Route::get('parcel/komposisi/{id}', [ParcelController::class, 'komposisi'])->name('parcels.komposisi');

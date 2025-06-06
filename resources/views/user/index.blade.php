@@ -61,7 +61,7 @@
                             <td>{{ $d->email }}</td>
                             <td>{{ $d->username }}</td>
                             {{-- <td style="word-break: break-all;">{{ Str::limit($d->password, 30) }}</td> --}}
-                            <td>{{ ucfirst($d->tipe_user) }}</td>
+                            <td>{{ ucfirst($d->tipeuser->tipe) }}</td>
                             <td>{{ $d->created_at }}</td>
                             <td>{{ $d->updated_at }}</td>
                             <td>

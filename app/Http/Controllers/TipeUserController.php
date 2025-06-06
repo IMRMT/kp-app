@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TipeProduk;
+use App\Models\Tipeuser;
 use Illuminate\Http\Request;
 
-class TipeProdukController extends Controller
+class TipeUserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,9 @@ class TipeProdukController extends Controller
         $sortBy = $request->input('sort_by', 'id');
         $sortOrder = $request->input('sort_order', 'asc');
 
-        $datas = TipeProduk::when($search, function ($query, $search) {
-            return $query->where('nama', 'like', "%$search%");
+        $datas = Tipeuser::when($search, function ($query, $search) {
+            return $query->where('tipe', 'like', "%$search%")
+                ->orWhere('deskripsi', 'like', "%$search%");
         })
             ->orderBy($sortBy, $sortOrder)
             ->paginate(6)
@@ -27,7 +28,7 @@ class TipeProdukController extends Controller
                 'sort_order' => $sortOrder,
             ]);
 
-        return view('tipeproduk.index', compact('datas', 'search', 'sortBy', 'sortOrder'));
+        return view('tipeuser.index', compact('datas', 'search', 'sortBy', 'sortOrder'));
     }
 
     /**
@@ -35,8 +36,8 @@ class TipeProdukController extends Controller
      */
     public function create()
     {
-        $tipeproduks = TipeProduk::all();
-        return view('tipeproduk.create', ['tipeproduks' => $tipeproduks]);
+        $tipeusers = Tipeuser::all();
+        return view('tipeuser.create', ['tipeusers' => $tipeusers]);
     }
 
     /**
@@ -45,14 +46,16 @@ class TipeProdukController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required',
+            'tipe' => 'required',
+            'deskripsi' => 'required',
         ]); //ini memberitahu bahwa kolom name itu perlu, agar tidak null
-        $data = new TipeProduk();
-        $data->nama = $request->get('nama');
+        $data = new Tipeuser();
+        $data->tipe = $request->get('tipe');
+        $data->deskripsi = $request->get('deskripsi');
         $data->save();
 
         // Type::create($request->all());
-        return redirect('tipeproduks')->with('status', 'The new data has been inserted');
+        return redirect('tipeusers')->with('status', 'The new data has been inserted');
     }
 
     /**
@@ -70,10 +73,10 @@ class TipeProdukController extends Controller
     {
         // $objType = $type;
         // dd($type);
-        $data = TipeProduk::find($id);
+        $data = Tipeuser::find($id);
         // dd($data);
         // echo'masuk form edit';
-        return view('tipeproduk.edit', ['datas' => $data]);
+        return view('tipeuser.edit', ['datas' => $data]);
     }
 
     /**
@@ -81,12 +84,13 @@ class TipeProdukController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = TipeProduk::find($id);
-        $data->nama = $request->get('nama');
+        $data = Tipeuser::find($id);
+        $data->tipe = $request->get('tipe');
+        $data->deskripsi = $request->get('deskripsi');
         $data->save();
 
         // Type::create($request->all());
-        return redirect('tipeproduks')->with('status', 'The new data has been updated');
+        return redirect('tipeusers')->with('status', 'The new data has been updated');
     }
 
     /**
@@ -96,13 +100,13 @@ class TipeProdukController extends Controller
     {
         try {
             //if no contraint error, then delete data. Redirect to index after it.
-            $deletedData = TipeProduk::find($id);
+            $deletedData = Tipeuser::find($id);
             $deletedData->delete();
-            return redirect('tipeproduks')->with('status', 'Horray ! Your data is successfully deleted !');
+            return redirect('tipeusers')->with('status', 'Horray ! Your data is successfully deleted !');
         } catch (\PDOException $ex) {
             // Failed to delete data, then show exception message
             $msg = "Failed to delete data ! Make sure there is no related data before deleting it";
-            return redirect('tipeproduks')->with('status', $msg);
+            return redirect('tipeusers')->with('status', $msg);
         }
     }
 }

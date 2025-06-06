@@ -6,7 +6,7 @@
     <form method="POST" action="{{ route('users.update', $datas->id) }}">
         @csrf
         @method('PUT')
-        @if (auth()->user()->tipe_user === 'admin')
+        @if (auth()->user()->tipeuser->tipe === 'admin')
             <div class="form-group">
                 <label for="nama">Nama User</label>
                 <input type="text" class="form-control" name="nama" aria-describedby="nameHelp"

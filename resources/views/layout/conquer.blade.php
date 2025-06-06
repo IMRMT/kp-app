@@ -66,13 +66,13 @@ License: You must have a valid license purchased only from themeforest(the above
                 @if (auth()->user())
                     <a href="{{ route('homeProduk') }}">
                         <div class="flex items-center space-x-4 mb-3 pb-2">
-                            <h1 class="text-3xl font-bold text-white mt-4">Purigama</h1>
+                            <h1 class="text-3xl font-bold text-white mt-4">Mbak Nonik</h1>
                         </div>
                     </a>
                 @else
                     <a href="{{ route('welcome') }}">
                         <div class="flex items-center space-x-4 mb-3 pb-2">
-                            <h1 class="text-3xl font-bold text-white mt-4">Purigama</h1>
+                            <h1 class="text-3xl font-bold text-white mt-4">Mbak Nonik</h1>
                         </div>
                     </a>
                 @endif
@@ -241,6 +241,12 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <li>
                                             <a href="{{ route('user') }}">👥 Daftar Karyawan</a>
                                         </li>
+                                        <li>
+                                            <a href="{{ route('tipeuser') }}">
+                                                <i class="icon-user"></i>
+                                                <span class="title">Tipe User</span>
+                                            </a>
+                                        </li>
                                     </ul>
                                 @endif
                             </li>
@@ -260,13 +266,13 @@ License: You must have a valid license purchased only from themeforest(the above
                         <li>
                             <a href="{{ route('satuan') }}">
                                 <i class="icon-layers"></i>
-                                <span class="title">Satuan produk</span>
+                                <span class="title">Satuan Produk</span>
                             </a>
                         </li>
                         <li>
                             <a href="{{ route('tipeproduk') }}">
                                 <i class="icon-layers"></i>
-                                <span class="title">Tipe produk</span>
+                                <span class="title">Tipe Produk</span>
                             </a>
                         </li>
                         <li class="last ">
