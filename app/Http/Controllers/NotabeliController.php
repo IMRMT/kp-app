@@ -282,7 +282,7 @@ class NotabeliController extends Controller
             // 'stok' => $request->stok,
             'unitprice' => $request->unitprice,
             'distributors_id' => $request->distributors,
-            'tgl_kadaluarsa' => $request->tgl_kadaluarsa,
+            'tgl_kadaluarsa' => $request->tgl_kadaluarsa ?? null,
             'status' => $request->status,
             'gudangs_id' => $request->gudangs,
         ]);
