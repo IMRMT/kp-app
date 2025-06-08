@@ -153,7 +153,8 @@
 
                     <div class="form-group">
                         <label for="tgl_kadaluarsa">Tanggal Kadaluarsa</label>
-                        <input type="date" class="form-control" name="tgl_kadaluarsa" value="{{ old('tgl_kadaluarsa', '') }}">
+                        <input type="date" class="form-control" name="tgl_kadaluarsa"
+                            value="{{ old('tgl_kadaluarsa', '') }}">
                     </div>
 
                     <div class="form-group">
@@ -208,7 +209,16 @@
                         {{ $item['nama'] }} - {{ $item['quantity'] }} {{ $satuan->nama ?? 'N/A' }}
                         (Rp{{ number_format($item['unitprice'], 0, ',', '.') }})
                         <br><small>Kadaluarsa:
-                            {{ \Carbon\Carbon::parse($item['tgl_kadaluarsa'])->format('d-m-Y')  ?? 'Tidak Ada'}}</small>
+                            @php
+                                $tgl = $item['tgl_kadaluarsa'];
+                            @endphp
+
+                            @if (!$tgl || \Carbon\Carbon::parse($tgl)->isToday())
+                                Tidak Ada
+                            @else
+                                {{ \Carbon\Carbon::parse($tgl)->format('d-m-Y') }}
+                            @endif
+                        </small>
                     </li>
                     <form method="POST" action="{{ route('notabeliscart.delete', ['id' => $key]) }}">
                         @csrf

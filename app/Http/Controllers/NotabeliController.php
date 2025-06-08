@@ -153,7 +153,10 @@ class NotabeliController extends Controller
             // ->groupBy('produks.id', 'produks.nama', 'produks.image');
             ->leftJoin('produkbatches', function ($join) {
                 $join->on('produks.id', '=', 'produkbatches.produks_id')
-                    ->whereDate('produkbatches.tgl_kadaluarsa', '>', Carbon::now())
+                    ->where(function ($q) {
+                        $q->whereDate('produkbatches.tgl_kadaluarsa', '>', Carbon::now())
+                            ->orWhereNull('produkbatches.tgl_kadaluarsa');
+                    })
                     ->where('produkbatches.status', '=', 'tersedia');
             })
             ->groupBy('produks.id', 'produks.nama', 'produks.image');
@@ -349,6 +352,10 @@ class NotabeliController extends Controller
         $cart = session()->get('cart', []);
 
         $id = $request->input('produk_id');
+        if ($request->input('tgl_kadaluarsa') == date('d-m-Y')) {
+            $tgl_kadaluarsa = null;
+        }
+        else
         $tgl_kadaluarsa = $request->input('tgl_kadaluarsa') ?: null;
         $unitprice = $request->input('unitprice');
         $quantity = (int) $request->input('quantity');
