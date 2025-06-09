@@ -11,6 +11,8 @@ use App\Models\Terimabatches;
 use App\Models\TipeProduk;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ProdukController extends Controller
 {
@@ -159,11 +161,56 @@ class ProdukController extends Controller
     {
         $produks = $this->getFilteredProduk($request);
 
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
+        // Sales data
+        $salesData = DB::table('notajuals_has_produks')
+            ->join('produkbatches', 'produkbatches.id', '=', 'notajuals_has_produks.produkbatches_id')
+            ->join('notajuals', 'notajuals.id', '=', 'notajuals_has_produks.notajuals_id')
+            ->whereBetween('notajuals.created_at', [$startOfMonth, $endOfMonth])
+            ->select(
+                DB::raw("WEEK(notajuals.created_at, 1) - WEEK('$startOfMonth', 1) + 1 as week_number"),
+                DB::raw('SUM(quantity) as total_qty'),
+                DB::raw('SUM(subtotal) as total_rupiah')
+            )
+            ->groupBy('week_number')
+            ->orderBy('week_number')
+            ->get();
+
+        $chartLabelsSales = $salesData->pluck('week_number')->map(fn($w) => 'Minggu ' . $w);
+        $chartDataSales = $salesData->pluck('total_qty');
+        $totalSalesRupiah = $salesData->sum('total_rupiah');
+
+        // Purchase data (fixed typo on notabelis)
+        $purchasesData = DB::table('notabelis_has_produks')
+            ->join('produkbatches', 'produkbatches.id', '=', 'notabelis_has_produks.produkbatches_id')
+            ->join('notabelis', 'notabelis.id', '=', 'notabelis_has_produks.notabelis_id')
+            ->whereBetween('notabelis.created_at', [$startOfMonth, $endOfMonth])
+            ->select(
+                DB::raw("WEEK(notabelis.created_at, 1) - WEEK('$startOfMonth', 1) + 1 as week_number"),
+                DB::raw('SUM(quantity) as total_qty'),
+                DB::raw('SUM(subtotal) as total_rupiah')
+            )
+            ->groupBy('week_number')
+            ->orderBy('week_number')
+            ->get();
+
+        $chartLabelsPurchases = $purchasesData->pluck('week_number')->map(fn($w) => 'Minggu ' . $w);
+        $chartDataPurchases = $purchasesData->pluck('total_qty');
+        $totalPurchasesRupiah = $purchasesData->sum('total_rupiah');
+
         return view('home', [
             'datas' => $produks,
             'sortBy' => $request->get('sort_by', 'nama'),
             'sortOrder' => $request->get('sort_order', 'asc'),
-            'search' => $request->get('search')
+            'search' => $request->get('search'),
+            'chartLabelsSales' => $chartLabelsSales,
+            'chartDataSales' => $chartDataSales,
+            'totalSalesRupiah' => $totalSalesRupiah,
+            'chartLabelsPurchases' => $chartLabelsPurchases,
+            'chartDataPurchases' => $chartDataPurchases,
+            'totalPurchasesRupiah' => $totalPurchasesRupiah,
         ]);
     }
 
