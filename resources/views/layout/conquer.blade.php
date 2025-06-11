@@ -275,12 +275,6 @@ License: You must have a valid license purchased only from themeforest(the above
                                 <span class="title">Tipe Produk</span>
                             </a>
                         </li>
-                        <li class="last ">
-                            <a href="{{ route('logout') }}">
-                                <i class="icon-user"></i>
-                                <span class="title">Log out</span>
-                            </a>
-                        </li>
                     @else
                         <li>
                             <a href="{{ route('welcome') }}">
