@@ -25,6 +25,10 @@
             button {
                 display: none !important;
             }
+
+            a {
+                display: none !important;
+            }
         }
     </style>
 
@@ -61,5 +65,6 @@
             </tfoot>
         </table>
         <button onclick="window.print()" class="btn btn-primary mt-3">Print Laporan</button>
+        <a href="{{ route('notabelis.csv', ['filter' => $filter]) }}" class="btn btn-success mt-3">Download CSV</a>
     </div>
 @endsection

@@ -101,7 +101,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('profiltoko/uploadImage/{id}', [ProfiltokoController::class, 'uploadImage']);
     Route::post('profiltoko/simpanImage', [ProfiltokoController::class, 'simpanImage']);
     Route::get('transaksi/report/reportPenjualan', [NotajualController::class, 'report'])->name('notajuals.report');
+    Route::get('transaksi/report/reportPenjualan/csv', [NotajualController::class, 'reportCsv'])->name('notajuals.csv');
     Route::get('transaksi/report/reportPembelian', [NotabeliController::class, 'report'])->name('notabelis.report');
+    Route::get('transaksi/report/reportPembelian/csv', [NotabeliController::class, 'reportCsv'])->name('notabelis.csv');
     Route::get('/transaksi', function () {
         return view('transaksi.tipe');
     })->name('transaksi');

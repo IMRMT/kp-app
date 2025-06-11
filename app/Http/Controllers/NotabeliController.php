@@ -116,6 +116,62 @@ class NotabeliController extends Controller
         return view('transaksi.reportPembelian', compact('purchases', 'total', 'filter'));
     }
 
+    public function reportCsv(Request $request)
+    {
+        $filter = $request->get('filter', 'day');
+
+        $query = Notabeliproduk::with('notabeli', 'produkbatches.produks');
+
+        switch ($filter) {
+            case 'week':
+                $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+                break;
+            case 'month':
+                $query->whereYear('created_at', now()->year)
+                    ->whereMonth('created_at', now()->month);
+                break;
+            case 'year':
+                $query->whereYear('created_at', now()->year);
+                break;
+            case 'day':
+            default:
+                $query->whereDate('created_at', now()->toDateString());
+        }
+
+        $purchases = $query->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="laporan_pembelian.csv"',
+        ];
+
+        $callback = function () use ($purchases) {
+            $file = fopen('php://output', 'w');
+
+            // BOM to ensure Excel opens UTF-8 properly
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            // Header row
+            fputcsv($file, ['Nota ID', 'ID Produk', 'Nama Produk', 'Quantity', 'Harga Satuan', 'Subtotal'], ';');
+
+            // Data rows
+            foreach ($purchases as $purchase) {
+                fputcsv($file, [
+                    $purchase->notabeli->id ?? '-',
+                    $purchase->produkbatches->produks_id ?? '-',
+                    $purchase->produkbatches->produks->nama ?? '-',
+                    $purchase->quantity,
+                    number_format($purchase->produkbatches->unitprice, 0, ',', '.'),
+                    number_format($purchase->subtotal, 0, ',', '.'),
+                ], ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -354,9 +410,8 @@ class NotabeliController extends Controller
         $id = $request->input('produk_id');
         if ($request->input('tgl_kadaluarsa') == date('d-m-Y')) {
             $tgl_kadaluarsa = null;
-        }
-        else
-        $tgl_kadaluarsa = $request->input('tgl_kadaluarsa') ?: null;
+        } else
+            $tgl_kadaluarsa = $request->input('tgl_kadaluarsa') ?: null;
         $unitprice = $request->input('unitprice');
         $quantity = (int) $request->input('quantity');
 

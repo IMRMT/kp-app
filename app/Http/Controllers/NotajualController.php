@@ -136,6 +136,62 @@ class NotajualController extends Controller
         return view('transaksi.reportPenjualan', compact('sales', 'total', 'filter'));
     }
 
+    public function reportCsv(Request $request)
+    {
+        $filter = $request->get('filter', 'day');
+
+        $query = Notajualproduk::with('notajual', 'produkbatches.produks');
+
+        switch ($filter) {
+            case 'week':
+                $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+                break;
+            case 'month':
+                $query->whereYear('created_at', now()->year)
+                    ->whereMonth('created_at', now()->month);
+                break;
+            case 'year':
+                $query->whereYear('created_at', now()->year);
+                break;
+            case 'day':
+            default:
+                $query->whereDate('created_at', now()->toDateString());
+        }
+
+        $sales = $query->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="laporan_penjualan.csv"',
+        ];
+
+        $callback = function () use ($sales) {
+            // Open PHP output stream
+            $file = fopen('php://output', 'w');
+
+            // BOM to ensure Excel reads UTF-8 properly
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            // Column headers (change if you want more user-friendly names)
+            fputcsv($file, ['Nota ID', 'ID Produk', 'Nama Produk', 'Quantity', 'Subtotal'], ';');
+
+            // Data rows
+            foreach ($sales as $sale) {
+                fputcsv($file, [
+                    $sale->notajual->id ?? '-',
+                    $sale->produkbatches->produks_id ?? '-',
+                    $sale->produkbatches->produks->nama ?? '-',
+                    $sale->quantity,
+                    number_format($sale->subtotal, 0, ',', '.') // Formatted as currency
+                ], ';'); // Use semicolon as separator for Excel
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
