@@ -174,6 +174,7 @@ class ParcelController extends Controller
         $parcel = new Parcel();
         $parcel->nama = $request->get('nama');
         $parcel->deskripsi = $request->get('deskripsi');
+        $parcel->biaya_packing = $request->get('biaya_packing');
         $parcel->save();
 
         // Save compositions
@@ -267,6 +268,7 @@ class ParcelController extends Controller
         $parcel = Parcel::findOrFail($id);
         $parcel->nama = $request->get('nama');
         $parcel->deskripsi = $request->get('deskripsi');
+        $parcel->biaya_packing = $request->get('biaya_packing');
         $parcel->save();
 
         $produks_ids = $request->input('produks_id', []);

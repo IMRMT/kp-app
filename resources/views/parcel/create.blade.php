@@ -26,6 +26,13 @@
             <textarea class="form-control" name="deskripsi" rows="4" placeholder="Masukkan Deskripsi Parcel"></textarea>
             <small id="nameHelp" class="form-text text-muted">Mohon isikan dengan input yang diinginkan.</small>
         </div>
+        <div class="form-group">
+            <label for="biaya_packing">Biaya Packing</label>
+            <input type="text" class="form-control" name="biaya_packing" aria-describedby="nameHelp"
+                placeholder="Masukkan Biaya Packing Parcel">
+            <small id="nameHelp" class="form-text text-muted">Mohon isikan dengan input yang diinginkan.</small>
+        </div>
+
         <h4>Produk Komposisi</h4>
         <div id="produk-list">
             <div class="produk-item">
