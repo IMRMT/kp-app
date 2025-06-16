@@ -140,7 +140,11 @@ class ProdukController extends Controller
             $query->orderBy($sortBy, $sortOrder);
         }
 
-        return $query->paginate(8);
+        return $query->paginate(6)->appends([
+            'search' => $search,
+            'sort_by' => $sortBy,
+            'sort_order' => $sortOrder,
+        ]);
     }
 
 

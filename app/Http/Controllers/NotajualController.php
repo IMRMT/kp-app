@@ -43,19 +43,22 @@ class NotajualController extends Controller
                 'produks.nama as nama_produk',
                 'distributors.id as distributors_id',
                 'distributors.nama as nama_distributor',
+                'satuans.nama as nama_satuan',
                 'users.nama as nama_pegawai'
             )
             ->join('notajuals', 'notajuals_has_produks.notajuals_id', '=', 'notajuals.id')
             ->join('users', 'notajuals.pegawai_id', '=', 'users.id')
             ->join('produkbatches', 'notajuals_has_produks.produkbatches_id', '=', 'produkbatches.id')
             ->join('produks', 'produkbatches.produks_id', '=', 'produks.id')
-            ->join('distributors', 'produkbatches.distributors_id', '=', 'distributors.id');
+            ->join('distributors', 'produkbatches.distributors_id', '=', 'distributors.id')
+            ->join('satuans', 'produks.satuans_id', '=', 'satuans.id');
 
         if ($search = $request->get('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('produkbatches.id', 'LIKE', "%$search%")
                     ->orWhere('produks.nama', 'LIKE', "%$search%")
                     ->orWhere('distributors.nama', 'LIKE', "%$search%")
+                    ->orWhere('satuans.nama', 'LIKE', "%$search%")
                     ->orWhere('users.nama', 'LIKE', "%$search%")
                     ->orWhere('notajuals.jenis_pembayaran', 'LIKE', "%$search%")
                     ->orWhere('notajuals_has_produks.quantity', 'LIKE', "%$search%")
@@ -83,6 +86,9 @@ class NotajualController extends Controller
                 break;
             case 'nama_dist':
                 $query->orderBy('distributors.nama', $sortOrder);
+                break;
+            case 'satuan':
+                $query->orderBy('satuans.nama', $sortOrder);
                 break;
             default:
                 $query->orderBy($sortBy, $sortOrder);

@@ -47,6 +47,7 @@
             'id_batch' => 'ID Batch',
             'produks_id' => 'ID Produk',
             'nama_produk' => 'Nama Produk',
+            'satuan' => 'Satuan',
             'produks_distributors_id' => 'ID Distributor',
             'nama_dist' => 'Nama Distributor',
             'metodebayar' => 'Metode Pembayaran',
@@ -77,6 +78,7 @@
                         <td>{{ $d->produkbatches->id ?? '-' }}</td>
                         <td>{{ $d->produks_id ?? '-' }}</td>{{-- ?? '-' -> supaya tetap bisa tampil walau null --}}
                         <td>{{ $d->nama_produk ?? '-' }}</td>
+                        <td>{{ $d->nama_satuan ?? '-' }}</td>
                         <td>{{ $d->distributors_id }}</td>
                         <td>{{ $d->nama_distributor ?? '-' }}</td>
                         <td>{{ $d->notajual->jenis_pembayaran ?? '-' }}</td>

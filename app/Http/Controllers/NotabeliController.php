@@ -29,19 +29,22 @@ class NotabeliController extends Controller
                 'produks.nama as nama_produk',
                 'distributors.id as distributors_id',
                 'distributors.nama as nama_distributor',
+                'satuans.nama as nama_satuan',
                 'users.nama as nama_pegawai'
             )
             ->join('notabelis', 'notabelis_has_produks.notabelis_id', '=', 'notabelis.id')
             ->join('users', 'notabelis.pegawai_id', '=', 'users.id')
             ->join('produkbatches', 'notabelis_has_produks.produkbatches_id', '=', 'produkbatches.id')
             ->join('produks', 'produkbatches.produks_id', '=', 'produks.id')
-            ->join('distributors', 'produkbatches.distributors_id', '=', 'distributors.id');
+            ->join('distributors', 'produkbatches.distributors_id', '=', 'distributors.id')
+            ->join('satuans', 'produks.satuans_id', '=', 'satuans.id');
 
         if ($search = $request->get('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('produkbatches.id', 'LIKE', "%$search%")
                     ->orWhere('produks.nama', 'LIKE', "%$search%")
                     ->orWhere('distributors.nama', 'LIKE', "%$search%")
+                    ->orWhere('satuans.nama', 'LIKE', "%$search%")
                     ->orWhere('users.nama', 'LIKE', "%$search%")
                     ->orWhere('notabelis_has_produks.quantity', 'LIKE', "%$search%")
                     ->orWhere('notabelis_has_produks.subtotal', 'LIKE', "%$search%")
@@ -66,12 +69,19 @@ class NotabeliController extends Controller
             case 'nama_dist':
                 $query->orderBy('distributors.nama', $sortOrder);
                 break;
+            case 'satuan':
+                $query->orderBy('satuans.nama', $sortOrder);
+                break;
             default:
                 $query->orderBy($sortBy, $sortOrder);
                 break;
         }
 
-        $datas = $query->paginate(10);
+        $datas = $query->paginate(10)->appends([
+            'search' => $search,
+            'sort_by' => $sortBy,
+            'sort_order' => $sortOrder,
+        ]);
 
         return view('transaksi.daftarPembelian', [
             'datas' => $datas,
