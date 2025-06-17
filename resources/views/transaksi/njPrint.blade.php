@@ -43,6 +43,7 @@
                 <tr>
                     <th>Nama Produk</th>
                     <th>Qty</th>
+                    <th>Diskon</th>
                     <th>Harga Satuan</th>
                     <th>Subtotal</th>
                 </tr>
@@ -60,6 +61,7 @@
                     <tr>
                         <td>{{ $namaProduk }}</td>
                         <td>{{ $item->quantity }}</td>
+                        <td>{{$item->produkbatches->diskon * 100}} %</td>
                         <td>Rp{{ number_format($subtotal / $item->quantity, 0, ',', '.') }}</td>
                         <td>Rp{{ number_format($subtotal, 0, ',', '.') }}</td>
                     </tr>

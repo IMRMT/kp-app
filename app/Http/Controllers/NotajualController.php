@@ -43,6 +43,7 @@ class NotajualController extends Controller
                 'produks.nama as nama_produk',
                 'distributors.id as distributors_id',
                 'distributors.nama as nama_distributor',
+                'produkbatches.diskon as jumlah_diskon',
                 'satuans.nama as nama_satuan',
                 'users.nama as nama_pegawai'
             )
@@ -57,6 +58,7 @@ class NotajualController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('produkbatches.id', 'LIKE', "%$search%")
                     ->orWhere('produks.nama', 'LIKE', "%$search%")
+                    ->orWhere('produkbatches.diskon', 'LIKE', "%$search%")
                     ->orWhere('distributors.nama', 'LIKE', "%$search%")
                     ->orWhere('satuans.nama', 'LIKE', "%$search%")
                     ->orWhere('users.nama', 'LIKE', "%$search%")
@@ -89,6 +91,9 @@ class NotajualController extends Controller
                 break;
             case 'satuan':
                 $query->orderBy('satuans.nama', $sortOrder);
+                break;
+            case 'diskon':
+                $query->orderBy('produkbatches.diskon', $sortOrder);
                 break;
             default:
                 $query->orderBy($sortBy, $sortOrder);
